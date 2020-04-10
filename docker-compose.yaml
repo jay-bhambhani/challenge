@@ -1,0 +1,27 @@
+version: "3"
+networks:
+  api_server_default:
+
+services:
+  buoychallenge:
+    networks:
+      - api_server_default
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ./entrypoint.sh
+    environment:
+      ENV_NAME: dev
+    ports:
+      - 8000:8000
+
+  database:
+    networks:
+      - api_server_default
+    image: postgres:10.6 # use latest official postgres version
+    env_file:
+      - database.env # configure postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+volumes:
+  database-data: # named volumes can be managed easier using docker-compose
